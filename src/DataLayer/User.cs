@@ -4,8 +4,13 @@ using System;
 
 namespace DataLayer
 {
+    public interface IObjectID
+    {
+        ObjectId Id { get; set; }
+    }
+
     [Serializable]
-    public class User
+    public class User : IObjectID
     {
         private User()
         {
