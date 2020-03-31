@@ -6,7 +6,7 @@ namespace DataLayer
 {
     public interface IObjectID
     {
-        ObjectId Id { get; set; }
+        ObjectId Id { get; }
     }
 
     [Serializable]

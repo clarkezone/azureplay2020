@@ -20,7 +20,7 @@
     "azureplaywebapi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "asd",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

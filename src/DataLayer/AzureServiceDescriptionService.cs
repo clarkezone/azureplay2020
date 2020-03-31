@@ -1,9 +1,14 @@
-﻿namespace DataLayer
+﻿using System;
+using Microsoft.Extensions.Configuration;
+
+namespace DataLayer
 {
-    public class AzureServiceDescriptionService : SimpleMongoObjectStore<AzureServiceDescription>
+    public class AzureServiceDescriptionService : SimpleMongoObjectStore<ServiceDescription>
     {
-        public AzureServiceDescriptionService(string connectionString, string database, string collection) : base(connectionString, database, collection)
+        public AzureServiceDescriptionService(IConfiguration configuration) : base(configuration.GetConnectionString("SuperFancyConnectionString"), "AzureServices", "ServiceDescriptions")
         {
         }
+
+        
     }
 }

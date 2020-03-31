@@ -18,11 +18,14 @@ namespace azureplaycmdline
             //var users = d.List();
             //PrintUsers(users);
 
-            var azureServicesService = new AzureServiceDescriptionService(connectionString, "AzureServices", "ServiceDescriptions");
+            var azureServicesService = new AzureServiceDescriptionService(connectionString);
             InsertServices(azureServicesService);
-            var services = azureServicesService.List();
-            PrintItems(services);
-            
+            //var services = azureServicesService.List();
+            //PrintItems(services);
+
+            var aservice = azureServicesService.Get("5e7e790c7396fe1eb826b71d");
+            Console.WriteLine(aservice);
+            Console.WriteLine("Done press return to exit");
             Console.ReadLine();
 
             //CreateBson();
@@ -30,11 +33,53 @@ namespace azureplaycmdline
 
         private static void InsertServices(AzureServiceDescriptionService azureServicesService)
         {
-            azureServicesService.Insert(AzureServiceDescription.Create("Virtual Machines", DataLayer.AzureServiceType.Compute));
-            azureServicesService.Insert(AzureServiceDescription.Create("Virtual Machines (classic)", DataLayer.AzureServiceType.Compute));
-            azureServicesService.Insert(AzureServiceDescription.Create("Virtual Machine scale sets", DataLayer.AzureServiceType.Compute));
-            azureServicesService.Insert(AzureServiceDescription.Create("Container services (deprecated)", DataLayer.AzureServiceType.Compute));
-            azureServicesService.Insert(AzureServiceDescription.Create("Function App", DataLayer.AzureServiceType.Compute));
+            var services = new ServiceDescription[] {
+            ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute,AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Virtual Machines (classic)", AzureServiceType.Compute, AzureSupportLevel.Classic),
+            ServiceDescription.CreateAzure("Virtual Machine scale sets", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Container services (deprecated)", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Deprecated),
+            ServiceDescription.CreateAzure("Function App", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("App Services", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Container Instances", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Batch accounts", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Service Fabric clusters", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Mesh applications", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Cloud services (classic)", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Classic),
+            ServiceDescription.CreateAzure("Kubernetes services", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Availability sets", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Disks", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Disks (classic)", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Classic),
+            ServiceDescription.CreateAzure("Snapshots", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Images", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Image definitions", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Image versions", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Shared image galleries", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("OS images (classic)", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Classic),
+            ServiceDescription.CreateAzure("VM images (classic)", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Classic),
+            ServiceDescription.CreateAzure("Proximity palcement groups", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Hosts", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current, new BsonDocument
+            {
+                { "name", "MongoDB" },
+                { "type", "Database" },
+                { "count", 1 },
+                { "info", new BsonDocument
+                    {
+                        { "x", 203 },
+                        { "y", 102 }
+                    }}
+            }),
+            ServiceDescription.CreateAzure("Host groups", DataLayer.AzureServiceType.Compute, AzureSupportLevel.Current),
+            };
+
+            foreach (var item in services)
+            {
+                azureServicesService.Insert(item);
+            }
+        
+            // [x] move to compact syntax adding is legacy
+            // [Add a random details blob with dynamic type json construction and BSON serialization
+        
         }
 
         private static void PrintItems(IList items)
