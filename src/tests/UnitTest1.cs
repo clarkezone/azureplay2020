@@ -1,3 +1,4 @@
+using DataLayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace tests
@@ -8,17 +9,25 @@ namespace tests
         [TestMethod]
         public void InitDb()
         {
-            DAL d = new DAL();
-            d.Init();
-            d.GetPeople();
+            //DAL d = new DAL();
+            //d.Init();
+            //d.GetPeople();
         }
 
         [TestMethod]
         public void CreateUser()
         {
-            DAL d = new DAL();
-            d.Init();
-            d.CreatePerson(User.Create("James", "Redmond"));
+            //AzureServiceDescriptionService d = new AzureServiceDescriptionService("");
+            //d.Init();
+            //d.CreatePerson(User.Create("James", "Redmond"));
+        }
+
+        [TestMethod]
+        public void Serialize()
+        {
+            //AzureServiceDescriptionService asd = new AzureServiceDescriptionService("");
+            ServiceDescription sd = ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute, AzureSupportLevel.Current);
+            var result = System.Text.Json.JsonSerializer.Serialize(sd, typeof(ServiceDescription));
         }
     }
 }

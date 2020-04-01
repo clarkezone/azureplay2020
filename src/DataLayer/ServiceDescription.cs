@@ -10,37 +10,37 @@ namespace DataLayer
 
     public class AzureDetails
     {
-        public AzureServiceType Type;
-        public AzureSupportLevel Supported;
+        public AzureServiceType Type { get; set; }
+        public AzureSupportLevel Supported { get; set; }
 
         //TODO BSON ignore if null
-        public BsonDocument Extras;
+        //public BsonDocument Extras { get; set; }
     }
 
     public class ServiceDescription : IObjectID
     {
         [BsonId]
-        public ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } //If you leave this blank one will be assigned by Cosmos
 
-        public string ServiceName;
-        public ServiceProvider CloudProvider;
-        public DateTime CreatedAt;
-        public DateTime UpdatedAt;
+        public string ServiceName { get; set; }
+        public ServiceProvider CloudProvider { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
-        public BsonDocument Details;
+        public AzureDetails Details { get; set; }
 
         public static ServiceDescription CreateAzure(string Name, AzureServiceType type, AzureSupportLevel supportLevel, BsonDocument extra=null)
         {
             var serviceDesc = new ServiceDescription();
-            serviceDesc.Id = new ObjectId();
             serviceDesc.CreatedAt = DateTime.Now;
             serviceDesc.UpdatedAt = DateTime.Now;
             serviceDesc.ServiceName = Name;
             serviceDesc.CloudProvider = ServiceProvider.Azure;
 
-            AzureDetails details = new AzureDetails() { Supported = supportLevel, Type = type, Extras=extra };
+            AzureDetails details = new AzureDetails() { Supported = supportLevel, Type = type};
 
-            serviceDesc.Details = details.ToBsonDocument();
+            serviceDesc.Details = details;
             return serviceDesc;
         }
 

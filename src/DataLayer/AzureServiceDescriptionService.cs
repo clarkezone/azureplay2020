@@ -9,6 +9,9 @@ namespace DataLayer
         {
         }
 
-        
+        public AzureServiceDescriptionService(String conn) : base(conn, "AzureServices", "ServiceDescriptions") { }
+
+
+
     }
 }

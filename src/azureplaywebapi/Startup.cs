@@ -21,13 +21,6 @@ namespace azureplaywebapi
         {
             services.AddControllers();
 
-    //        string connectionString =
-    //@"mongodb://clarkezonetestcosmosforplay:QV6W2fWmedSoEGvQSVAzP3IOUZWtTyjIkGq2k4Yxna6JEm0lvGm4p7zbcPOMaKYwMzkWCxJTguDw5QYbPh4cng==@clarkezonetestcosmosforplay.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@clarkezonetestcosmosforplay@&retrywrites=false";
-
-
-            //TODO: fetch connection string from Azure somehow ;-0
-            //var asd = new AzureServiceDescriptionService(connectionString);
-
             services.AddSingleton<AzureServiceDescriptionService>();
         }
 

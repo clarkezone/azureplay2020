@@ -6,7 +6,7 @@ namespace DataLayer
 {
     public interface IObjectID
     {
-        ObjectId Id { get; }
+        string Id { get; }
     }
 
     [Serializable]
@@ -18,7 +18,8 @@ namespace DataLayer
         }
 
         [BsonId]
-        public ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         public string Name;
         public string Address;
@@ -28,7 +29,7 @@ namespace DataLayer
         public static User Create(string Name, string Address)
         {
             var user = new User();
-            user.Id = new ObjectId();
+            user.Id = new ObjectId().ToString();
             user.CreatedAt = DateTime.Now;
             user.UpdatedAt = DateTime.Now;
             user.Name = Name;

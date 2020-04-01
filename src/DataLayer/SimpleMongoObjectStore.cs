@@ -34,13 +34,13 @@ namespace DataLayer
         public void Insert(T u) => _objectCollection.InsertOne(u);
 
         public T Get(T id) => _objectCollection.Find<T>(u => u.Id == ((IObjectID)id).Id).FirstOrDefault();
-        public T Get(string id) => _objectCollection.Find(u => u.Id == new ObjectId(id)).FirstOrDefault();
+        public T Get(string id) => _objectCollection.Find(u => u.Id == id).FirstOrDefault();
 
         public void Delete(T @object) => _objectCollection.DeleteOne<T>(u => u.Id == @object.Id);
 
         public void Update(string id, T value)
         {
-            _objectCollection.ReplaceOne<T>(u => u.Id == new ObjectId(id), value);
+            _objectCollection.ReplaceOne<T>(u => u.Id == id, value);
         }
     }
 }

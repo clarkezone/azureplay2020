@@ -15,7 +15,8 @@ type Response struct {
 
 func main() {
 	client := http.Client{}
-	contents, err := client.Get("https://localhost:5001/asd")
+	//contents, err := client.Get("https://localhost:5001/asd")
+	contents, err := client.Get("https://azureplaywebapi20200327120536.azurewebsites.net/asd")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
