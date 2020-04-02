@@ -40,9 +40,10 @@ namespace azureplaywebapi.Controllers
 
         // POST: LearningResource
         [HttpPost]
-        public void Create([FromBody] LearningResource value)
+        public bool Create([FromBody] LearningResource value)
         {
-            _lrService.Insert(value);
+            bool result = _lrService.InsertAndUpdateService(value);
+            return result;
         }
 
         // PUT: LearningResource/5

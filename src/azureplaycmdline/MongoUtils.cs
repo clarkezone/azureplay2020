@@ -13,6 +13,9 @@ namespace azureplaycmdline
             azureServicesService.Database.DropCollection("ServiceDescriptions");
             azureServicesService.Database.CreateCollection("ServiceDescriptions");
 
+            azureServicesService.Database.DropCollection("LearningResources");
+            azureServicesService.Database.CreateCollection("LearningResources");
+
             InsertCompute(azureServicesService);
             InsertDatabase(azureServicesService);
         }
