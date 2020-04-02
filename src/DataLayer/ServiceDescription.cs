@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace DataLayer
 {
@@ -29,6 +30,8 @@ namespace DataLayer
         public DateTime UpdatedAt { get; set; }
 
         public AzureDetails Details { get; set; }
+
+        public List<LearningResource> LearningResources { get; set; }
 
         public static ServiceDescription CreateAzure(string Name, AzureServiceType type, AzureSupportLevel supportLevel, BsonDocument extra=null)
         {

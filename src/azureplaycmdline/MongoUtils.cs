@@ -1,10 +1,22 @@
 ﻿using DataLayer;
 using MongoDB.Bson;
+using MongoDB.Driver.Core.Configuration;
 
 namespace azureplaycmdline
 {
     class MongoUtils
     {
+        public static void InsertAllAzureServices()
+        {
+            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+
+            azureServicesService.Database.DropCollection("ServiceDescriptions");
+            azureServicesService.Database.CreateCollection("ServiceDescriptions");
+
+            InsertCompute(azureServicesService);
+            InsertDatabase(azureServicesService);
+        }
+
         private static void InsertCompute(ServiceDescriptionService azureServicesService)
         {
             var services = new ServiceDescription[] {

@@ -11,8 +11,9 @@ namespace DataLayerGremlin
 
         public PeopleService(string endpointurl, string primarykey)
         {
+            var un = "/dbs/" + database + "/colls/" + container;
             var gremlinServer = new GremlinServer(endpointurl, port, enableSsl: true,
-                                                   username: "/dbs/" + database + "/colls/" + container,
+                                                   username: un,
                                                    password: primarykey);
 
             using (var gremlinClient = new GremlinClient(gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))

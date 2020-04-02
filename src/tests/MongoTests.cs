@@ -5,10 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace tests
 {
     [TestClass]
-    public class UnitTest1
+    public class MongoTests
     {
-        string _connectionString = "mongodb://clarkezonetestcosmosforplay:L9hg579CaocxeEwGYxI9JDpUkGYMjS6N30ygXduMdonsroBF6wdyEPjF21hktt9PeIFl0pLmNmI0WkWgDrnBTw==@clarkezonetestcosmosforplay.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@clarkezonetestcosmosforplay@&retrywrites=false";
-
         [TestMethod]
         public void InitDb()
         {
@@ -28,14 +26,27 @@ namespace tests
         [TestMethod]
         public void CreateLearningResource()
         {
-            var sds = new ServiceDescriptionService(_connectionString);
+            var sds = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
 
             var result = sds.ObjectCollection.Find(p => p.ServiceName == "Host groups");
 
             LearningResource lr = new LearningResource() { Name = "Cool document", ServiceID = result.FirstOrDefault().Id, Uri = new System.Uri("http://cooldoc") };
-            LearningResourceService lrs = new LearningResourceService(_connectionString);
+            LearningResourceService lrs = new LearningResourceService(DevConnectionStrings.MongoConnectionString);
             lrs.Insert(lr);
         }
+
+        [TestMethod]
+        public void CreateLearningResourceWithTransaction()
+        {
+            var sds = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+
+            var result = sds.ObjectCollection.Find(p => p.ServiceName == "Host groups");
+
+            LearningResource lr = new LearningResource() { Name = "Cool document", ServiceID = result.FirstOrDefault().Id, Uri = new System.Uri("http://cooldoc") };
+            LearningResourceService lrs = new LearningResourceService(DevConnectionStrings.MongoConnectionString);
+            lrs.InsertAndUpdateService(lr);
+        }
+
 
         [TestMethod]
         public void Serialize()

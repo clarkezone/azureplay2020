@@ -6,7 +6,6 @@ namespace DataLayer
 {
     public class SimpleMongoObjectStore<T> where T : IObjectID
     {
-        readonly IMongoCollection<T> _objectCollection;
         readonly string _connectionString;
 
         public bool BadConnectionString()
@@ -14,7 +13,11 @@ namespace DataLayer
             return string.IsNullOrEmpty(_connectionString);
         }
 
-        public IMongoCollection<T> ObjectCollection { get { return _objectCollection; } }
+        public IMongoCollection<T> ObjectCollection { get; }
+
+        protected MongoClient Client { get; }
+
+        public IMongoDatabase Database { get; }
 
         public SimpleMongoObjectStore(string connectionString, string database, string collection)
         {
@@ -23,26 +26,25 @@ namespace DataLayer
             );
             settings.SslSettings =
               new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
-            MongoClient client = new MongoClient(settings);
+            Client = new MongoClient(settings);
 
-            var db = client.GetDatabase(database);
-            _objectCollection = db.GetCollection<T>(collection);
+            Database = Client.GetDatabase(database);
+            ObjectCollection = Database.GetCollection<T>(collection);
             _connectionString = connectionString;
         }
 
-        public List<T> List() => _objectCollection.Find(p => true).ToList();
+        public List<T> List() => ObjectCollection.Find(p => true).ToList();
 
-        public void Insert(T u) => _objectCollection.InsertOne(u);
+        public void Insert(T u) => ObjectCollection.InsertOne(u);
 
-        public T Get(T id) => _objectCollection.Find<T>(u => u.Id == ((IObjectID)id).Id).FirstOrDefault();
-        public T Get(string id) => _objectCollection.Find(u => u.Id == id).FirstOrDefault();
+        public T Get(T id) => ObjectCollection.Find<T>(u => u.Id == ((IObjectID)id).Id).FirstOrDefault();
+        public T Get(string id) => ObjectCollection.Find(u => u.Id == id).FirstOrDefault();
 
-        public void Delete(T @object) => _objectCollection.DeleteOne<T>(u => u.Id == @object.Id);
+        public void Delete(T @object) => ObjectCollection.DeleteOne<T>(u => u.Id == @object.Id);
 
         public void Update(string id, T value)
         {
-            _objectCollection.ReplaceOne<T>(u => u.Id == id, value);
+            ObjectCollection.ReplaceOne<T>(u => u.Id == id, value);
         }
-
     }
 }

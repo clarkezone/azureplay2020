@@ -10,16 +10,10 @@ namespace azureplaycmdline
     {
         static void Main(string[] args)
         {
-            PeopleService ps = new PeopleService(DevConnectionString.GremlinEnpointUrl, DevConnectionString.GremlinPrimaryKey); ;
+            //PeopleService ps = new PeopleService(DevConnectionString.GremlinEnpointUrl, DevConnectionString.GremlinPrimaryKey); ;
 
 
-            //var azureServicesService = new ServiceDescriptionService(ConnectionString.DevMongoConnectionString);
-            //InsertDatabase(azureServicesService);
-            //var services = azureServicesService.List();
-            //PrintItems(services);
-
-           // var aservice = azureServicesService.Get("5e7e790c7396fe1eb826b71d");
-            //Console.WriteLine(aservice);
+            MongoUtils.InsertAllAzureServices();
             Console.WriteLine("Done press return to exit");
             Console.ReadLine();
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace azureplaycmdline
+namespace tests
 {
     static class DevConnectionStrings
     {
