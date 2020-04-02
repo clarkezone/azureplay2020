@@ -28,7 +28,8 @@ func main() {
 		dst := getServices(rest)
 		fmt.Printf("Result: %s\n", dst)
 	} else if *sdFind != "" {
-		//TODO1 find by name
+		dst := findServices(rest, *sdFind)
+		fmt.Printf("Result: %s\n", dst)
 		//TODO2 list by category
 	}
 }

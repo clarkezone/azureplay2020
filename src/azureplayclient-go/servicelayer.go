@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"net/url"
 )
 
 type LearningResource struct {
@@ -15,6 +16,16 @@ type LearningResource struct {
 
 func getServices(client *SimpleREST) *bytes.Buffer {
 	buffer, err := client.jsonRequest("services")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return buffer
+}
+
+func findServices(client *SimpleREST, searchQuery string) *bytes.Buffer {
+	query := url.PathEscape(searchQuery) // TODO sanitize user input
+	url := "services/find/" + query
+	buffer, err := client.jsonRequest(url)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

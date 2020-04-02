@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace azureplaywebapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ASDController : ControllerBase
+    public class ServicesController : ControllerBase
     {
         private ServiceDescriptionService _asdService;
-        ILogger<ASDController> _logger;
+        ILogger<ServicesController> _logger;
 
-        public ASDController(ILogger<ASDController> logger, ServiceDescriptionService asdService)
+        public ServicesController(ILogger<ServicesController> logger, ServiceDescriptionService asdService)
         {
             _asdService = asdService;
             _logger = logger;
@@ -22,7 +24,7 @@ namespace azureplaywebapi.Controllers
             }
         }
 
-        // GET: ASD
+        // GET: Services
         [HttpGet]
         public IEnumerable<ServiceDescription> Get()
         {
@@ -30,21 +32,28 @@ namespace azureplaywebapi.Controllers
             return items;
         }
 
-        // GET: ASD/5
+        // GET: Services/5
         [HttpGet("{id:length(24)}", Name = "Get")]
         public ServiceDescription Get(string id)
         {
             return _asdService.Get(id);
         }
 
-        // POST: ASD
+        // GET: Services/find/jamesclarke
+        [HttpGet("find/{searchstring}")]
+        public IEnumerable<ServiceDescription> Find(string searchstring)
+        {
+            return _asdService.ObjectCollection.Find(f => f.ServiceName.Contains(searchstring)).ToList();
+        }
+
+        // POST: Services
         [HttpPost]
         public void Create([FromBody] ServiceDescription value)
         {
             _asdService.Insert(value);
         }
 
-        // PUT: ASD/5
+        // PUT: Services/5
         [HttpPut("{id:length(24)}")]
         public void Update(string id, [FromBody] ServiceDescription value)
         {

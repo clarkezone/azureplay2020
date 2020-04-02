@@ -8,12 +8,12 @@ namespace azureplaywebapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class LearningResourceController : Controller
+    public class LearningResourcesController : Controller
     {
         private LearningResourceService _lrService;
-        ILogger<LearningResourceController> _logger;
+        ILogger<LearningResourcesController> _logger;
 
-        public LearningResourceController(ILogger<LearningResourceController> logger, LearningResourceService lrService)
+        public LearningResourcesController(ILogger<LearningResourcesController> logger, LearningResourceService lrService)
         {
             _lrService = lrService;
             _logger = logger;
