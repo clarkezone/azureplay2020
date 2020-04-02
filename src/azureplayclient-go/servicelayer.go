@@ -14,7 +14,7 @@ type LearningResource struct {
 }
 
 func getServices(client *SimpleREST) *bytes.Buffer {
-	buffer, err := client.jsonRequest("asd")
+	buffer, err := client.jsonRequest("services")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -31,7 +31,7 @@ func newLearningResource(name string, serviceId string, uri string) []byte {
 }
 
 func createLearningResource(client *SimpleREST, resource []byte) string {
-	res, err := client.jsonPost("LearningResource", resource)
+	res, err := client.jsonPost("LearningResources", resource)
 	if err != nil {
 		log.Fatal("Post failed")
 	}
