@@ -5,8 +5,8 @@ using System;
 namespace DataLayer
 {
     public enum ServiceProvider { Azure, AWS }
-    public enum AzureServiceType { Compute, Storage }
-    public enum AzureSupportLevel { Current, Classic, Deprecated }
+    public enum AzureServiceType { Compute, Storage, Database }
+    public enum AzureSupportLevel { Current, Classic, Deprecated, Preview }
 
     public class AzureDetails
     {

@@ -9,17 +9,8 @@ namespace azureplaycmdline
     {
         static void Main(string[] args)
         {
-            string connectionString =
-    @"mongodb://clarkezonetestcosmosforplay:L9hg579CaocxeEwGYxI9JDpUkGYMjS6N30ygXduMdonsroBF6wdyEPjF21hktt9PeIFl0pLmNmI0WkWgDrnBTw==@clarkezonetestcosmosforplay.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@clarkezonetestcosmosforplay@&retrywrites=false";
-
-            //UserService d = new UserService(connectionString, "People", "PeopleCollection");
-
-            //d.Insert(User.Create("Randle", "Redmond"));
-            //var users = d.List();
-            //PrintUsers(users);
-
-            var azureServicesService = new ServiceDescriptionService(connectionString);
-            InsertServices(azureServicesService);
+            var azureServicesService = new ServiceDescriptionService(ConnectionString.DevConnectionString);
+            InsertDatabase(azureServicesService);
             //var services = azureServicesService.List();
             //PrintItems(services);
 
@@ -31,7 +22,7 @@ namespace azureplaycmdline
             //CreateBson();
         }
 
-        private static void InsertServices(ServiceDescriptionService azureServicesService)
+        private static void InsertCompute(ServiceDescriptionService azureServicesService)
         {
             var services = new ServiceDescription[] {
             ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute,AzureSupportLevel.Current),
@@ -80,6 +71,41 @@ namespace azureplaycmdline
             // [x] move to compact syntax adding is legacy
             // [Add a random details blob with dynamic type json construction and BSON serialization
         
+        }
+
+        private static void InsertDatabase(ServiceDescriptionService azureServicesService)
+        {
+            var services = new ServiceDescription[] {
+            ServiceDescription.CreateAzure("Azure Cosmos DB", AzureServiceType.Database,AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure SQL", AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL databases", AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Database for MySQL servers", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Database for PostgreSQL", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Database for MariaDB servers", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL servers", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Synapse Analytics (formerly SQL DW)", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Database Migration Services", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Azure Cache for Redis", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL Server stretch databases", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Data factories", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL elastic pools", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Virtual clusters", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Managed databases", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("Elastic Job agents", DataLayer.AzureServiceType.Database, AzureSupportLevel.Preview),
+            ServiceDescription.CreateAzure("SQL managed instances", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL virtual machines", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            ServiceDescription.CreateAzure("SQL Server registries", DataLayer.AzureServiceType.Database, AzureSupportLevel.Current),
+            
+            };
+
+            foreach (var item in services)
+            {
+                azureServicesService.Insert(item);
+            }
+
+            // [x] move to compact syntax adding is legacy
+            // [Add a random details blob with dynamic type json construction and BSON serialization
+
         }
 
         private static void PrintItems(IList items)
