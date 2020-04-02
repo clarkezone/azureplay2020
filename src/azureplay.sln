@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "azureplay", "BlazorServerWe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "azureplaycmdline", "azureplaycmdline\azureplaycmdline.csproj", "{C0ACD234-492C-4B7E-A9F2-28AA0CFA512A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{145DFDA6-175A-4821-8272-2348F652F386}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayerMongo", "DataLayer\DataLayerMongo.csproj", "{145DFDA6-175A-4821-8272-2348F652F386}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "tests\tests.csproj", "{259C568B-822B-414A-889D-1454BFD004FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "azureplaywebapi", "azureplaywebapi\azureplaywebapi.csproj", "{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "azureplaywebapi", "azureplaywebapi\azureplaywebapi.csproj", "{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayerGremlin", "DataLayerGremlin\DataLayerGremlin.csproj", "{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

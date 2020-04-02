@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\DataLayerGremlin\DataLayerGremlin.csproj" />
+    <ProjectReference Include="..\DataLayer\DataLayerMongo.csproj" />
   </ItemGroup>
 
 </Project>
