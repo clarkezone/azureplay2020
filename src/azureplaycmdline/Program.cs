@@ -10,7 +10,7 @@ namespace azureplaycmdline
         static void Main(string[] args)
         {
             string connectionString =
-    @"mongodb://clarkezonetestcosmosforplay:QV6W2fWmedSoEGvQSVAzP3IOUZWtTyjIkGq2k4Yxna6JEm0lvGm4p7zbcPOMaKYwMzkWCxJTguDw5QYbPh4cng==@clarkezonetestcosmosforplay.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@clarkezonetestcosmosforplay@&retrywrites=false";
+    @"mongodb://clarkezonetestcosmosforplay:L9hg579CaocxeEwGYxI9JDpUkGYMjS6N30ygXduMdonsroBF6wdyEPjF21hktt9PeIFl0pLmNmI0WkWgDrnBTw==@clarkezonetestcosmosforplay.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@clarkezonetestcosmosforplay@&retrywrites=false";
 
             //UserService d = new UserService(connectionString, "People", "PeopleCollection");
 
@@ -18,20 +18,20 @@ namespace azureplaycmdline
             //var users = d.List();
             //PrintUsers(users);
 
-            var azureServicesService = new AzureServiceDescriptionService(connectionString);
+            var azureServicesService = new ServiceDescriptionService(connectionString);
             InsertServices(azureServicesService);
             //var services = azureServicesService.List();
             //PrintItems(services);
 
-            var aservice = azureServicesService.Get("5e7e790c7396fe1eb826b71d");
-            Console.WriteLine(aservice);
+           // var aservice = azureServicesService.Get("5e7e790c7396fe1eb826b71d");
+            //Console.WriteLine(aservice);
             Console.WriteLine("Done press return to exit");
             Console.ReadLine();
 
             //CreateBson();
         }
 
-        private static void InsertServices(AzureServiceDescriptionService azureServicesService)
+        private static void InsertServices(ServiceDescriptionService azureServicesService)
         {
             var services = new ServiceDescription[] {
             ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute,AzureSupportLevel.Current),

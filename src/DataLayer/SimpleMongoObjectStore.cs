@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Security.Authentication;
 
@@ -14,6 +13,8 @@ namespace DataLayer
         {
             return string.IsNullOrEmpty(_connectionString);
         }
+
+        public IMongoCollection<T> ObjectCollection { get { return _objectCollection; } }
 
         public SimpleMongoObjectStore(string connectionString, string database, string collection)
         {
@@ -42,5 +43,6 @@ namespace DataLayer
         {
             _objectCollection.ReplaceOne<T>(u => u.Id == id, value);
         }
+
     }
 }

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DataLayer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 
 namespace azureplaywebapi.Controllers
 {
@@ -15,10 +9,10 @@ namespace azureplaywebapi.Controllers
     [ApiController]
     public class ASDController : ControllerBase
     {
-        private AzureServiceDescriptionService _asdService;
+        private ServiceDescriptionService _asdService;
         ILogger<ASDController> _logger;
 
-        public ASDController(ILogger<ASDController> logger, AzureServiceDescriptionService asdService)
+        public ASDController(ILogger<ASDController> logger, ServiceDescriptionService asdService)
         {
             _asdService = asdService;
             _logger = logger;
