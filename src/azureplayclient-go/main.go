@@ -13,7 +13,8 @@ func main() {
 	client := &http.Client{}
 
 	// REST endpoint
-	const s = "https://localhost:5001/"
+	//const s = "https://localhost:5001/"
+	const s = "https://azureplaywebapi20200327120536.azurewebsites.net/"
 	rest := CreateSimpleRest(s, client)
 
 	if *lrListRequested == true {
@@ -21,6 +22,7 @@ func main() {
 	} else if *lrFind != "" {
 		// TODO
 	} else if *lrCreate == true {
+
 		re := newLearningResource(*lrCreateName, *lrCreateServiceId, *lrCreateUri)
 		dst := createLearningResource(rest, re)
 		fmt.Printf("Create Result: %s\n", dst)
@@ -70,6 +72,12 @@ func parseCmdline() (*bool, *string, *bool, *string, *string, *string, *bool, *s
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
+	if *lrCreate==true && *lrCreateName=="" || *lrCreateServiceId=="" || *lrCreateUri == "" {
+		lrCommand.PrintDefaults()
+		os.Exit(1)
+	}
+
 	return lrListRequested, lrFind, lrCreate, lrCreateName, lrCreateServiceId, lrCreateUri, sdListRequested, sdFind
 }
 
