@@ -18,7 +18,12 @@ namespace DataLayerGremlin
 
             using (var gremlinClient = new GremlinClient(gremlinServer, new GraphSON2Reader(), new GraphSON2Writer(), GremlinClient.GraphSON2MimeType))
             {
+                gremlinClient
             }
+        }
+
+        public void AddPerson(string name) {
+
         }
     }
 }
