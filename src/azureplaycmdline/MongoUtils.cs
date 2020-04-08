@@ -1,6 +1,8 @@
 ﻿using DataLayer;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Configuration;
+using System;
+using System.Collections.Generic;
 
 namespace azureplaycmdline
 {
@@ -18,6 +20,12 @@ namespace azureplaycmdline
 
             InsertCompute(azureServicesService);
             InsertDatabase(azureServicesService);
+        }
+
+        internal static List<ServiceDescription> QueryAzureServices()
+        {
+            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+            return azureServicesService.List();
         }
 
         private static void InsertCompute(ServiceDescriptionService azureServicesService)

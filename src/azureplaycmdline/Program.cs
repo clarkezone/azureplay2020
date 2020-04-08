@@ -11,18 +11,23 @@ namespace azureplaycmdline
     {
         static async Task Main(string[] args)
         {
+            //Gremlin playground
             //PeopleService ps = new PeopleService(DevConnectionString.GremlinEnpointUrl, DevConnectionString.GremlinPrimaryKey); ;
+            //await GremlinUtils.InsertAllPeople();
 
-            await GremlinUtils.InsertAllPeople();
+            //Mongo playground
+            var items = MongoUtils.QueryAzureServices();
+            PrintItems(items);
 
             //MongoUtils.InsertAllAzureServices();
-            //Console.WriteLine("Done press return to exit");
-            //Console.ReadLine();
 
             //CreateBson();
+
+            Console.WriteLine("Done press return to exit");
+            Console.ReadLine();
         }
 
-     
+
 
         private static void PrintItems(IList items)
         {
