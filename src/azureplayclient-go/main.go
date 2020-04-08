@@ -73,7 +73,7 @@ func parseCmdline() (*bool, *string, *bool, *string, *string, *string, *bool, *s
 		os.Exit(1)
 	}
 
-	if *lrCreate==true && *lrCreateName=="" || *lrCreateServiceId=="" || *lrCreateUri == "" {
+	if *lrCreate==true && (*lrCreateName=="" || *lrCreateServiceId=="" || *lrCreateUri == "") {
 		lrCommand.PrintDefaults()
 		os.Exit(1)
 	}
