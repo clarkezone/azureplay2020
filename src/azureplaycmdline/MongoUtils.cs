@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,60 @@ namespace azureplaycmdline
 
             InsertCompute(azureServicesService);
             InsertDatabase(azureServicesService);
+        }
+
+        public static void ConfigureCaseInsensitiveIndex()
+        {
+            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+            var collection = azureServicesService.ObjectCollection;
+            var keys = Builders<ServiceDescription>.IndexKeys.Ascending("ServiceName");
+            CreateIndexOptions indexOptions = new CreateIndexOptions();
+            indexOptions.Collation = new Collation("en",strength:CollationStrength.Secondary);
+            var model = new CreateIndexModel<ServiceDescription>(keys, indexOptions);
+            collection.Indexes.CreateOne(model);
+        }
+
+        public static IList<ServiceDescription> QueryCaseInsensitve(string serviceName)
+        {
+            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+            var collection = azureServicesService.ObjectCollection;
+            FindOptions fo = new FindOptions();
+            fo.Collation = new Collation("en", strength: CollationStrength.Secondary);
+
+            var builder = new FilterDefinitionBuilder<ServiceDescription>();
+            var built = builder.Eq<String>((ServiceDescription b) => b.ServiceName, serviceName);
+            return collection.Find<ServiceDescription>(built, fo).ToList();
+
+            //collection.Find()
+            return collection.Find<ServiceDescription>(f => f.ServiceName==serviceName, fo).ToList();
+        }
+
+        public static void MonitorChanges()
+        {
+            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+
+            var coll = azureServicesService.ObjectCollection;
+
+            // Example taken from here: https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-change-streams
+
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<ServiceDescription>>()
+    .Match(change => change.OperationType == ChangeStreamOperationType.Insert || change.OperationType == ChangeStreamOperationType.Update || change.OperationType == ChangeStreamOperationType.Replace)
+    .AppendStage<ChangeStreamDocument<ServiceDescription>, ChangeStreamDocument<ServiceDescription>, ServiceDescription>(
+    "{ $project: { '_id': 1, 'fullDocument': 1, 'ns': 1, 'documentKey': 1 }}");
+
+            var options = new ChangeStreamOptions
+            {
+                FullDocument = ChangeStreamFullDocumentOption.UpdateLookup
+            };
+
+            var enumerator = coll.Watch(pipeline, options).ToEnumerable().GetEnumerator();
+
+            while (enumerator.MoveNext())
+            {
+                Console.WriteLine(enumerator.Current);
+            }
+
+            enumerator.Dispose();
         }
 
         internal static List<ServiceDescription> QueryAzureServices()

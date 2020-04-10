@@ -16,8 +16,14 @@ namespace azureplaycmdline
             //await GremlinUtils.InsertAllPeople();
 
             //Mongo playground
-            var items = MongoUtils.QueryAzureServices();
-            PrintItems(items);
+
+            //MongoUtils.ConfigureCaseInsensitiveIndex();
+
+            //var items = MongoUtils.QueryAzureServices();
+            //var items = MongoUtils.QueryCaseInsensitve("sql server registries");
+            //PrintItems(items);
+
+            MongoUtils.MonitorChanges();
 
             //MongoUtils.InsertAllAzureServices();
 
@@ -29,7 +35,7 @@ namespace azureplaycmdline
 
 
 
-        private static void PrintItems(IList items)
+        private static void PrintItems(System.Collections.Generic.IList<ServiceDescription> items)
         {
             foreach (var user in items)
             {
