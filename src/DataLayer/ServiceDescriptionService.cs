@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 
-namespace DataLayer
+namespace DataLayerMongo
 {
     public class ServiceDescriptionService : SimpleMongoObjectStore<ServiceDescription>
     {

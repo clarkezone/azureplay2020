@@ -1,4 +1,4 @@
-﻿namespace DataLayer
+﻿namespace DataLayerMongo
 {
     public class UserService : SimpleMongoObjectStore<User>
     {

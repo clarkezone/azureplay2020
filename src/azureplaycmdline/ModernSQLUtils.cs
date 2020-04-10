@@ -1,89 +1,31 @@
-﻿using DataLayerMongo;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
-using System;
+﻿using DataLayerModernSQL;
+using DataLayerModernSQL.Services;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace azureplaycmdline
 {
-    class MongoUtils
+    class ModernSQLUtils
     {
         public static void InsertAllAzureServices()
         {
-            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
+            var azureServicesService = new DataService(DevConnectionStrings.ModernSqlConnectionString);
 
-            azureServicesService.Database.DropCollection("ServiceDescriptions");
-            azureServicesService.Database.CreateCollection("ServiceDescriptions");
-
-            azureServicesService.Database.DropCollection("LearningResources");
-            azureServicesService.Database.CreateCollection("LearningResources");
+            azureServicesService.Database.EnsureDeleted();
+            azureServicesService.Database.EnsureDeleted();
 
             InsertCompute(azureServicesService);
             InsertDatabase(azureServicesService);
         }
 
-        public static void ConfigureCaseInsensitiveIndex()
+
+        internal static IEnumerable<ServiceDescription> QueryAzureServices()
         {
-            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
-            var collection = azureServicesService.ObjectCollection;
-            var keys = Builders<ServiceDescription>.IndexKeys.Ascending("ServiceName");
-            CreateIndexOptions indexOptions = new CreateIndexOptions();
-            indexOptions.Collation = new Collation("en",strength:CollationStrength.Secondary);
-            var model = new CreateIndexModel<ServiceDescription>(keys, indexOptions);
-            collection.Indexes.CreateOne(model);
+            var azureServicesService = new DataService(DevConnectionStrings.ModernSqlConnectionString);
+            return azureServicesService.Services.OrderBy(ob => ob.ServiceName).AsEnumerable();
         }
 
-        public static IList<ServiceDescription> QueryCaseInsensitve(string serviceName)
-        {
-            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
-            var collection = azureServicesService.ObjectCollection;
-            FindOptions fo = new FindOptions();
-            fo.Collation = new Collation("en", strength: CollationStrength.Secondary);
-
-            var builder = new FilterDefinitionBuilder<ServiceDescription>();
-            var built = builder.Eq<String>((ServiceDescription b) => b.ServiceName, serviceName);
-            return collection.Find<ServiceDescription>(built, fo).ToList();
-
-            //collection.Find()
-            //return collection.Find<ServiceDescription>(f => f.ServiceName==serviceName, fo).ToList();
-        }
-
-        public static void MonitorChanges()
-        {
-            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
-
-            var coll = azureServicesService.ObjectCollection;
-
-            // Example taken from here: https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-change-streams
-
-            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<ServiceDescription>>()
-    .Match(change => change.OperationType == ChangeStreamOperationType.Insert || change.OperationType == ChangeStreamOperationType.Update || change.OperationType == ChangeStreamOperationType.Replace)
-    .AppendStage<ChangeStreamDocument<ServiceDescription>, ChangeStreamDocument<ServiceDescription>, ServiceDescription>(
-    "{ $project: { '_id': 1, 'fullDocument': 1, 'ns': 1, 'documentKey': 1 }}");
-
-            var options = new ChangeStreamOptions
-            {
-                FullDocument = ChangeStreamFullDocumentOption.UpdateLookup
-            };
-
-            var enumerator = coll.Watch(pipeline, options).ToEnumerable().GetEnumerator();
-
-            while (enumerator.MoveNext())
-            {
-                Console.WriteLine(enumerator.Current);
-            }
-
-            enumerator.Dispose();
-        }
-
-        internal static List<ServiceDescription> QueryAzureServices()
-        {
-            var azureServicesService = new ServiceDescriptionService(DevConnectionStrings.MongoConnectionString);
-            return azureServicesService.List();
-        }
-
-        private static void InsertCompute(ServiceDescriptionService azureServicesService)
+        private static void InsertCompute(DataService azureServicesService)
         {
             var services = new ServiceDescription[] {
             ServiceDescription.CreateAzure("Virtual Machines", AzureServiceType.Compute,AzureSupportLevel.Current),
@@ -110,23 +52,13 @@ namespace azureplaycmdline
             ServiceDescription.CreateAzure("OS images (classic)", AzureServiceType.Compute, AzureSupportLevel.Classic),
             ServiceDescription.CreateAzure("VM images (classic)", AzureServiceType.Compute, AzureSupportLevel.Classic),
             ServiceDescription.CreateAzure("Proximity palcement groups", AzureServiceType.Compute, AzureSupportLevel.Current),
-            ServiceDescription.CreateAzure("Hosts", AzureServiceType.Compute, AzureSupportLevel.Current, new BsonDocument
-            {
-                { "name", "MongoDB" },
-                { "type", "Database" },
-                { "count", 1 },
-                { "info", new BsonDocument
-                    {
-                        { "x", 203 },
-                        { "y", 102 }
-                    }}
-            }),
+            ServiceDescription.CreateAzure("Hosts", AzureServiceType.Compute, AzureSupportLevel.Current),
             ServiceDescription.CreateAzure("Host groups", AzureServiceType.Compute, AzureSupportLevel.Current),
             };
 
             foreach (var item in services)
             {
-                azureServicesService.Insert(item);
+                azureServicesService.Services.Add(item);
             }
 
             // [x] move to compact syntax adding is legacy
@@ -134,7 +66,7 @@ namespace azureplaycmdline
 
         }
 
-        private static void InsertDatabase(ServiceDescriptionService azureServicesService)
+        private static void InsertDatabase(DataService azureServicesService)
         {
             var services = new ServiceDescription[] {
             ServiceDescription.CreateAzure("Azure Cosmos DB", AzureServiceType.Database,AzureSupportLevel.Current),
@@ -161,30 +93,12 @@ namespace azureplaycmdline
 
             foreach (var item in services)
             {
-                azureServicesService.Insert(item);
+                azureServicesService.Services.Add(item);
             }
 
             // [x] move to compact syntax adding is legacy
             // [Add a random details blob with dynamic type json construction and BSON serialization
 
-        }
-
-        static void CreateBson(string connectionString)
-        {
-            BsonService d = new BsonService(connectionString, "People", "Things");
-
-            var document = new BsonDocument
-            {
-                { "name", "MongoDB" },
-                { "type", "Database" },
-                { "count", 1 },
-                { "info", new BsonDocument
-                    {
-                        { "x", 203 },
-                        { "y", 102 }
-                    }}
-            };
-            d.Create(document);
         }
     }
 }

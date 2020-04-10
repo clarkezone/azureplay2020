@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Authentication;
 
-namespace DataLayer
+namespace DataLayerMongo
 {
     public class SimpleMongoObjectStore<T> where T : IObjectID
     {

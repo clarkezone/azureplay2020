@@ -1,10 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Security.Authentication;
 
-namespace DataLayer
+namespace DataLayerMongo
 {
     public class BsonService
     {

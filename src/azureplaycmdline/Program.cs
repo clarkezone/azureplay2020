@@ -1,4 +1,4 @@
-﻿using DataLayer;
+﻿using DataLayerMongo;
 using DataLayerGremlin;
 using MongoDB.Bson;
 using System;
@@ -9,7 +9,7 @@ namespace azureplaycmdline
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             //Gremlin playground
             //PeopleService ps = new PeopleService(DevConnectionString.GremlinEnpointUrl, DevConnectionString.GremlinPrimaryKey); ;
@@ -23,11 +23,13 @@ namespace azureplaycmdline
             //var items = MongoUtils.QueryCaseInsensitve("sql server registries");
             //PrintItems(items);
 
-            MongoUtils.MonitorChanges();
+            //MongoUtils.MonitorChanges();
 
             //MongoUtils.InsertAllAzureServices();
 
             //CreateBson();
+
+            ModernSQLUtils.InsertAllAzureServices();
 
             Console.WriteLine("Done press return to exit");
             Console.ReadLine();

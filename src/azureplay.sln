@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "tests\tests.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "azureplaywebapi", "azureplaywebapi\azureplaywebapi.csproj", "{3FF7FC46-FBAD-4044-8A81-76DB97B66B2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayerGremlin", "DataLayerGremlin\DataLayerGremlin.csproj", "{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayerGremlin", "DataLayerGremlin\DataLayerGremlin.csproj", "{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayerModernSQL", "DataLayerModernSQL\DataLayerModernSQL.csproj", "{95ED45D2-FB19-4876-B43D-A67D3C2B4E9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13405A97-5A5E-4A34-8BEF-7B3D5A0CF540}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95ED45D2-FB19-4876-B43D-A67D3C2B4E9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95ED45D2-FB19-4876-B43D-A67D3C2B4E9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95ED45D2-FB19-4876-B43D-A67D3C2B4E9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95ED45D2-FB19-4876-B43D-A67D3C2B4E9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using System;
 
-namespace DataLayer
+namespace DataLayerMongo
 {
     public class LearningResourceService : SimpleMongoObjectStore<LearningResource>
     {

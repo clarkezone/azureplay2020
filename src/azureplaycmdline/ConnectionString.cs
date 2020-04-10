@@ -4,6 +4,14 @@ namespace azureplaycmdline
 {
     static class DevConnectionStrings
     {
+        public static string ModernSqlConnectionString
+        {
+            get
+            {
+                return Environment.GetEnvironmentVariable("AZUREPLAY_MODERNSQL_CONNECTIONSTRING");
+            }
+        }
+
         public static string MongoConnectionString
         {
             get
