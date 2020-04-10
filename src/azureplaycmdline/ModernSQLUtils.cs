@@ -1,5 +1,7 @@
 ﻿using DataLayerModernSQL;
 using DataLayerModernSQL.Services;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,13 +11,24 @@ namespace azureplaycmdline
     {
         public static void InsertAllAzureServices()
         {
-            var azureServicesService = new DataService(DevConnectionStrings.ModernSqlConnectionString);
+            using (var azureServicesService = new DataService(DevConnectionStrings.ModernSqlConnectionString))
+            {
 
-            azureServicesService.Database.EnsureDeleted();
-            azureServicesService.Database.EnsureDeleted();
+                var result = azureServicesService.Database.EnsureDeleted();
+                if (result == false)
+                {
+                    throw new Exception("couldn't delete database");
+                }
 
-            InsertCompute(azureServicesService);
-            InsertDatabase(azureServicesService);
+                azureServicesService.Database.Migrate();
+                if (result == false)
+                {
+                    throw new Exception("couldn't delete database");
+                }
+
+                InsertCompute(azureServicesService);
+                InsertDatabase(azureServicesService);
+            }
         }
 
 
@@ -60,7 +73,8 @@ namespace azureplaycmdline
             {
                 azureServicesService.Services.Add(item);
             }
-
+            
+            azureServicesService.SaveChanges();
             // [x] move to compact syntax adding is legacy
             // [Add a random details blob with dynamic type json construction and BSON serialization
 

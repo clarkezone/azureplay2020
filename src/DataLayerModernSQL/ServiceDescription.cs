@@ -9,6 +9,7 @@ namespace DataLayerModernSQL
 
     public class AzureDetails
     {
+        public Guid Id { get; set; }
         public AzureServiceType Type { get; set; }
         public AzureSupportLevel Supported { get; set; }
     }
