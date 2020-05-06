@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/url"
+	"crypto/rand"
 )
 
 type LearningResource struct {
@@ -15,7 +17,7 @@ type LearningResource struct {
 }
 
 func getServices(client *SimpleREST) *bytes.Buffer {
-	buffer, err := client.jsonRequest("services")
+	buffer, err := client.jsonRequest("modernsqlservices")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -24,7 +26,33 @@ func getServices(client *SimpleREST) *bytes.Buffer {
 
 func findServices(client *SimpleREST, searchQuery string) *bytes.Buffer {
 	query := url.PathEscape(searchQuery) // TODO sanitize user input
-	url := "services/find/" + query
+	url := "modernsqlservices/find/" + query
+	buffer, err := client.jsonRequest(url)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return buffer
+}
+
+func getLearningResources(client *SimpleREST) *bytes.Buffer {
+	buffer, err := client.jsonRequest("modernsqlLearningResources")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return buffer
+}
+
+func createLearningResource(client *SimpleREST, resource []byte) string {
+	res, err := client.jsonPost("modernsqlLearningResources", resource)
+	if err != nil {
+		log.Fatalf("Post failed %v", err.Error())
+	}
+	return res
+}
+
+func findLearningResource(client *SimpleREST, searchQuery string) *bytes.Buffer {
+	query := url.PathEscape(searchQuery) // TODO sanitize user input
+	url := "modernsqlLearningResources/find/" + query
 	buffer, err := client.jsonRequest(url)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -33,7 +61,7 @@ func findServices(client *SimpleREST, searchQuery string) *bytes.Buffer {
 }
 
 func newLearningResource(name string, serviceId string, uri string) []byte {
-	re := LearningResource{Name:name, ServiceId: serviceId, Uri:uri, }
+	re := LearningResource{Id: makeguid(), Name:name, ServiceId: serviceId, Uri:uri, }
 	result, err := json.Marshal(re)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -41,11 +69,13 @@ func newLearningResource(name string, serviceId string, uri string) []byte {
 	return result
 }
 
-func createLearningResource(client *SimpleREST, resource []byte) string {
-	res, err := client.jsonPost("LearningResources", resource)
+func makeguid() (string) {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
 	if err != nil {
-		log.Fatal("Post failed")
+		log.Fatal(err)
 	}
-	return res
+	uuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+	return uuid
 }
-

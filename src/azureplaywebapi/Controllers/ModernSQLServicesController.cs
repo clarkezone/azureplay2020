@@ -1,26 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using DataLayerMongo;
+using DataLayerModernSQL;
+using DataLayerModernSQL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
 
 namespace azureplaywebapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class ModernSQLServicesController : ControllerBase
     {
-        private ServiceDescriptionService _asdService;
-        ILogger<ServicesController> _logger;
+        private DataService _asdService;
+        ILogger<DataService> _logger;
 
-        public ServicesController(ILogger<ServicesController> logger, ServiceDescriptionService asdService)
+        public ModernSQLServicesController(ILogger<DataService> logger, DataService asdService)
         {
             _asdService = asdService;
             _logger = logger;
             if (_asdService.BadConnectionString())
             {
                 _logger.LogError("No connection string configured");
+                throw new System.Exception("connection string is bad");
             }
         }
 
@@ -28,48 +30,48 @@ namespace azureplaywebapi.Controllers
         [HttpGet]
         public IEnumerable<ServiceDescription> Get()
         {
-            var items = _asdService.List().ToArray();
+            var items = _asdService.Services.AsEnumerable();
             return items;
         }
 
         // GET: Services/5
-        [HttpGet("{id:length(24)}", Name = "Get")]
-        public ServiceDescription Get(string id)
+        [HttpGet("{id}")]
+        public ServiceDescription Get(Guid id)
         {
-            return _asdService.Get(id);
+            return _asdService.Services.Find(new object[] { id });
         }
 
         // GET: Services/find/jamesclarke
         [HttpGet("find/{searchstring}")]
         public IEnumerable<ServiceDescription> Find(string searchstring)
         {
-            return _asdService.ObjectCollection.Find(f => f.ServiceName.Contains(searchstring)).ToList();
+            return _asdService.Services.Where(f => f.ServiceName.ToLower().Contains(searchstring.ToLower())).AsEnumerable();
         }
 
         // POST: Services
         [HttpPost]
         public void Create([FromBody] ServiceDescription value)
         {
-            _asdService.Insert(value);
+            _asdService.Services.Add(value);
         }
 
         // PUT: Services/5
-        [HttpPut("{id:length(24)}")]
+        [HttpPut("{id}")]
         public void Update(string id, [FromBody] ServiceDescription value)
         {
-            _asdService.Update(id, value);
+            _asdService.Services.Update(value);
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var item = _asdService.Get(id);
-            if (item == null)
+            var foundItem = _asdService.Services.Find(id);
+            if (foundItem == null)
             {
                 return NotFound();
             }
-            _asdService.Delete(item);
+            _asdService.Services.Remove(foundItem);
             return NoContent();
         }
     }

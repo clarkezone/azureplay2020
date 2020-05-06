@@ -13,16 +13,17 @@ func main() {
 	client := &http.Client{}
 
 	// REST endpoint
-	//const s = "https://localhost:5001/"
-	const s = "https://azureplaywebapi20200327120536.azurewebsites.net/"
+	const s = "https://localhost:5001/"
+	//const s = "https://azureplaywebapi20200327120536.azurewebsites.net/"
 	rest := CreateSimpleRest(s, client)
 
 	if *lrListRequested == true {
-		// TODO
+		lrs := getLearningResources(rest)
+		fmt.Printf("Result: %s\n", lrs)
 	} else if *lrFind != "" {
-		// TODO
+		lrs := findLearningResource(rest, *lrFind)
+		fmt.Printf("Result: %s\n", lrs)
 	} else if *lrCreate == true {
-
 		re := newLearningResource(*lrCreateName, *lrCreateServiceId, *lrCreateUri)
 		dst := createLearningResource(rest, re)
 		fmt.Printf("Create Result: %s\n", dst)
@@ -33,6 +34,9 @@ func main() {
 		dst := findServices(rest, *sdFind)
 		fmt.Printf("Result: %s\n", dst)
 		//TODO2 list by category
+	} else if *lrListRequested == true {
+		dst := getLearningResources(rest)
+		fmt.Printf("Result: %s\n", dst)
 	}
 }
 

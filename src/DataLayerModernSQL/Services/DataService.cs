@@ -1,4 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 // Note that you need to run PM> add-migration initial from the package manager console 
 
@@ -14,6 +18,11 @@ namespace DataLayerModernSQL.Services
 
         }
 
+        public DataService(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("ModernSqlConnectionString");
+        }
+
         public DataService(string ConnectionString)
         {
             _connectionString = ConnectionString;
@@ -25,7 +34,10 @@ namespace DataLayerModernSQL.Services
         }
 
         public DbSet<ServiceDescription> Services { get; set; }
+
         public DbSet<LearningResource> LearningResources { get; set; }
+
+        public bool BadConnectionString() => string.IsNullOrEmpty(_connectionString);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
