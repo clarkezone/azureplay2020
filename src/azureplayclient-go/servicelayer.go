@@ -62,6 +62,7 @@ func findLearningResource(client *SimpleREST, searchQuery string) *bytes.Buffer 
 
 func newLearningResource(name string, serviceId string, uri string) []byte {
 	re := LearningResource{Id: makeguid(), Name:name, ServiceId: serviceId, Uri:uri, }
+	//re := LearningResource{Name:name, ServiceId: serviceId, Uri:uri, }
 	result, err := json.Marshal(re)
 	if err != nil {
 		log.Fatal(err.Error())
