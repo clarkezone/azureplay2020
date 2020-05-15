@@ -7,6 +7,8 @@ using DataLayerModernSQL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
 namespace azureplaywebapi.Controllers
@@ -78,10 +80,20 @@ namespace azureplaywebapi.Controllers
             return NoContent();
         }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        
+
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            // Do whatever here...
-            Debug.WriteLine("can i somehow handle the exception here?  Erm turns out no.");
+            if (!base.ModelState.IsValid)
+            {
+                var problemDetails = base.ProblemDetailsFactory.CreateValidationProblemDetails(base.HttpContext, base.ModelState);
+
+                string errors = string.Join(";", problemDetails.Errors.Select(x => "key:" + x.Key + " error:" + x.Value[0]));
+
+                _logger.LogWarning("Client API call failed with invalid model state: key {0} with problem ", errors);
+                
+            }
+            base.OnActionExecuted(context);
         }
     }
 }
