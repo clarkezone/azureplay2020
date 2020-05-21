@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace azureplaywebapi
 {
@@ -28,12 +29,19 @@ namespace azureplaywebapi
             //services.AddSingleton<ServiceDescriptionService>();
             services.AddSingleton<LearningResourceService>();
             services.AddApplicationInsightsTelemetry();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
 
             if (env.IsDevelopment())
             {
@@ -46,7 +54,13 @@ namespace azureplaywebapi
 
             app.UseAuthorization();
 
-           
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AzurePlay V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseEndpoints(endpoints =>
             {
