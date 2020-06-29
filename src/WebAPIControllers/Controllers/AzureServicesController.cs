@@ -10,12 +10,12 @@ namespace azureplaywebapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ModernSQLServicesController : ControllerBase
+    public class AzureServicesController : ControllerBase
     {
         private DataService _asdService;
         ILogger<DataService> _logger;
 
-        public ModernSQLServicesController(ILogger<DataService> logger, DataService asdService)
+        public AzureServicesController(ILogger<DataService> logger, DataService asdService)
         {
             _asdService = asdService;
             _logger = logger;

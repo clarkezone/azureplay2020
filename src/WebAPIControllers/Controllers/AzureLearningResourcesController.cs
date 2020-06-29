@@ -15,12 +15,12 @@ namespace azureplaywebapi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ModernSQLLearningResourcesController : Controller
+    public class AzureLearningResourcesController : Controller
     {
         private DataService _lrService;
-        ILogger<ModernSQLLearningResourcesController> _logger;
+        ILogger<AzureLearningResourcesController> _logger;
 
-        public ModernSQLLearningResourcesController(ILogger<ModernSQLLearningResourcesController> logger, DataService lrService)
+        public AzureLearningResourcesController(ILogger<AzureLearningResourcesController> logger, DataService lrService)
         {
             _lrService = lrService;
             _logger = logger;
