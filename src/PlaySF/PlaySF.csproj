@@ -6,10 +6,19 @@
     <ServerGarbageCollection>True</ServerGarbageCollection>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+    <ApplicationInsightsResourceId>/subscriptions/81da142d-ba42-4cbe-803d-c65929bb1e2d/resourceGroups/azureplay/providers/microsoft.insights/components/azureplaywebapi20200327120536</ApplicationInsightsResourceId>
+    <UserSecretsId>d43cd505-1b7b-43ce-a3cd-b2d2b27139b9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="4.1.416" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.ServiceFabric" Version="2.3.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.ServiceFabric.Native" Version="2.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.5" />
+    <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="4.1.417" />
+    <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="4.1.417" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.417" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.1.417" />
   </ItemGroup>
 
   <ItemGroup>
