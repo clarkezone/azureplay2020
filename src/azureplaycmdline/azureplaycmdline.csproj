@@ -9,6 +9,7 @@
     <ProjectReference Include="..\DataLayerGremlin\DataLayerGremlin.csproj" />
     <ProjectReference Include="..\DataLayerModernSQL\DataLayerModernSQL.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayerMongo.csproj" />
+    <ProjectReference Include="..\WebAPIControllers\WebAPIControllers.csproj" />
   </ItemGroup>
 
 </Project>

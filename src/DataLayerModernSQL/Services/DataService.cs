@@ -20,7 +20,8 @@ namespace DataLayerModernSQL.Services
 
         public DataService(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("ModernSqlConnectionString");
+            //TODO extract constant
+            _connectionString = configuration.GetConnectionString("sqlconnectionstring");
         }
 
         public DataService(string ConnectionString)

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using WebAPIControllers.Extensions;
 
 namespace azureplaywebapi
 {
@@ -28,7 +29,7 @@ namespace azureplaywebapi
             services.AddSingleton<DataService>();
             //services.AddSingleton<ServiceDescriptionService>();
             services.AddSingleton<LearningResourceService>();
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(Configuration[KeyvaultSecrets.AppInsightsKeyName]);
 
             services.AddSwaggerGen(c =>
             {

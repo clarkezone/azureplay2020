@@ -4,12 +4,14 @@ using MongoDB.Bson;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using WebAPIControllers;
+using WebAPIControllers.Extensions;
 
 namespace azureplaycmdline
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //Gremlin playground
             //PeopleService ps = new PeopleService(DevConnectionString.GremlinEnpointUrl, DevConnectionString.GremlinPrimaryKey); ;
@@ -29,7 +31,9 @@ namespace azureplaycmdline
 
             //CreateBson();
 
-            ModernSQLUtils.InsertAllAzureServices();
+            //ModernSQLUtils.InsertAllAzureServices();
+
+            await KeyvaultSecrets.GetAKVSecretsUsingCert();
 
             Console.WriteLine("Done press return to exit");
             Console.ReadLine();

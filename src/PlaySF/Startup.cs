@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.ServiceFabric;
-using System.Fabric;
 
 namespace PlaySF
 {
@@ -22,7 +19,8 @@ namespace PlaySF
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]); //TODO get the instrumentationkey from AKV
+            //TODO detect when MSI is available and use that
+            services.AddApplicationInsightsTelemetry(Configuration[WebAPIControllers.Extensions.KeyvaultSecrets.AppInsightsKeyName]); //TODO get the instrumentationkey from AKV
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
