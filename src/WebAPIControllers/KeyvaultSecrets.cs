@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Services.AppAuthentication;
 using DataLayerModernSQL.Services;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
+using Microsoft.Extensions.Hosting;
 
 namespace WebAPIControllers.Extensions
 {
@@ -21,25 +23,25 @@ namespace WebAPIControllers.Extensions
         public static string SqlConnectionStringKeyName => sqlconnectionstringkeyname;
 
         // Extension method that configures KeyVault config provider using MSI Auth
-        public static IWebHostBuilder ConfigureKeyvaultMSI(this IWebHostBuilder builder, string keyvaulturl, string aadappid)
+        public static void ConfigureKeyvaultMSI(this IConfigurationBuilder config, string keyvaulturl, string aadappid)
         {
-            return builder.ConfigureAppConfiguration((context, config) =>
+            if (string.IsNullOrEmpty(keyvaulturl) || string.IsNullOrEmpty(aadappid))
             {
-                var builtConfig = config.Build();
+                throw new ArgumentException("missing keyvault URI or aadappid");
+            }
 
-                config.AddAKVwithMSIAuth(keyvaulturl, aadappid);
+            config.AddAKVwithMSIAuth(keyvaulturl, aadappid);
 
-                //TODO: if this worked we'd use it but there is a dependency failure
-                //var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                //var keyVaultClient = new createkvclientformsi
+            //TODO: if this worked we'd use it but there is a dependency failure
+            //var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            //var keyVaultClient = new createkvclientformsi
 
-                //config.AddAzureKeyVault(
-                //    //TODO store kv name in config
-                //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                //    keyvaultbase,
-                //    keyVaultClient,
-                //    new DefaultKeyVaultSecretManager());
-            });
+            //config.AddAzureKeyVault(
+            //    //TODO store kv name in config
+            //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+            //    keyvaultbase,
+            //    keyVaultClient,
+            //    new DefaultKeyVaultSecretManager());
         }
 
         // Extension method that configures KeyVault config provider using App registration with 509 Cert
@@ -52,15 +54,40 @@ namespace WebAPIControllers.Extensions
 
             config.AddAKVwithAppRegistrationSecretAuth(keyvaulturl, secret, aadappid);
 
-                //TODO: if this worked we'd use it but there is a dependency failure
-                //config.AddAzureKeyVault(
-                //    //TODO store kv name in config
-                //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                //    keyvaultbase,
-                //    appclientid,
-                //    GetCertbyIssuer(certissuer)
-                //    );
+            //TODO: if this worked we'd use it but there is a dependency failure
+            //config.AddAzureKeyVault(
+            //    //TODO store kv name in config
+            //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+            //    keyvaultbase,
+            //    appclientid,
+            //    GetCertbyIssuer(certissuer)
+            //    );
             //});
+        }
+
+        //https://stackoverflow.com/questions/52278205/how-to-read-appsetting-json-for-service-fabric-solution
+        public static IWebHostBuilder UseCommonConfiguration(this IWebHostBuilder builder)
+        {
+            builder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                var env = hostingContext.HostingEnvironment;
+
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+                if (env.IsDevelopment())
+                {
+                    var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+                    if (appAssembly != null)
+                    {
+                        config.AddUserSecrets(appAssembly, optional: true);
+                    }
+                }
+
+                config.AddEnvironmentVariables();
+            });
+
+            return builder;
         }
 
         public static async Task<Tuple<string, string>> GetAKVSecretsUsingSecret(string appclientsecret, string appclientid, string keyvaultbase)
@@ -101,7 +128,7 @@ namespace WebAPIControllers.Extensions
             var sqlconnectionstring = await client.GetSecretAsync(keyvaultbase, sqlconnectionstringkeyname);
             if (logger != null)
             {
-                logger.LogInformation("After get connstring"+sqlconnectionstring.Value);
+                logger.LogInformation("After get connstring" + sqlconnectionstring.Value);
             }
             return new Tuple<string, string>("", sqlconnectionstring.Value);
         }
