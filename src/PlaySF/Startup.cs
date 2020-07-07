@@ -1,3 +1,4 @@
+using DataLayerModernSQL.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +21,14 @@ namespace PlaySF
         {
             services.AddControllers();
             //TODO detect when MSI is available and use that
-            services.AddApplicationInsightsTelemetry(Configuration[WebAPIControllers.Extensions.KeyvaultSecrets.AppInsightsKeyName]); //TODO get the instrumentationkey from AKV
+            services.AddApplicationInsightsTelemetry();
+
+            services.AddSingleton<DataService>();
+
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
