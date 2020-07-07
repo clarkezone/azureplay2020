@@ -5,6 +5,7 @@ using DataLayerModernSQL;
 using DataLayerModernSQL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebAPIControllers.Extensions;
 
 namespace azureplaywebapi.Controllers
 {
@@ -19,11 +20,7 @@ namespace azureplaywebapi.Controllers
         {
             _asdService = asdService;
             _logger = logger;
-            if (_asdService.BadConnectionString())
-            {
-                _logger.LogError("No connection string configured");
-                throw new System.Exception("connection string is bad");
-            }
+            asdService.CheckConnectionString(logger);
         }
 
         // GET: Services

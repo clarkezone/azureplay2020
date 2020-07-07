@@ -1,67 +1,69 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.ComponentModel;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Azure.KeyVault;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Services.AppAuthentication;
+using DataLayerModernSQL.Services;
+using Microsoft.Extensions.Logging;
 
 namespace WebAPIControllers.Extensions
 {
     public static class KeyvaultSecrets
     {
-        const string appclientid = "b053899e-e0a3-4794-9400-864df5a1faf0";
-        const string keyvaultbase = "https://clarkezoneplayvault.vault.azure.net/";
-        const string appinsightskeyname = "APPINSIGHTSINSTRUMENTATIONKEY";
         const string certissuer = "czazplayappregauth";
         const string sqlconnectionstringkeyname = "sqlconnectionstring";
-
-        public static string AppInsightsKeyName => appinsightskeyname;
 
         public static string SqlConnectionStringKeyName => sqlconnectionstringkeyname;
 
         // Extension method that configures KeyVault config provider using MSI Auth
-        public static IWebHostBuilder ConfigureKeyvaultMSI(this IWebHostBuilder builder)
+        public static IWebHostBuilder ConfigureKeyvaultMSI(this IWebHostBuilder builder, string keyvaulturl, string aadappid)
         {
             return builder.ConfigureAppConfiguration((context, config) =>
             {
                 var builtConfig = config.Build();
 
-                var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                var keyVaultClient = new KeyVaultClient(
-                    new KeyVaultClient.AuthenticationCallback(
-                        azureServiceTokenProvider.KeyVaultTokenCallback));
+                config.AddAKVwithMSIAuth(keyvaulturl, aadappid);
 
-                config.AddAzureKeyVault(
-                    //TODO store kv name in config
-                    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                    keyvaultbase,
-                    keyVaultClient,
-                    new DefaultKeyVaultSecretManager());
+                //TODO: if this worked we'd use it but there is a dependency failure
+                //var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                //var keyVaultClient = new createkvclientformsi
+
+                //config.AddAzureKeyVault(
+                //    //TODO store kv name in config
+                //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                //    keyvaultbase,
+                //    keyVaultClient,
+                //    new DefaultKeyVaultSecretManager());
             });
         }
 
         // Extension method that configures KeyVault config provider using App registration with 509 Cert
-        public static IWebHostBuilder ConfigureKeyvaultAppRegistration(this IWebHostBuilder builder)
+        public static void ConfigureKeyvaultAppRegistration(this IConfigurationBuilder config, string keyvaulturl, string secret, string aadappid)
         {
-            return builder.ConfigureAppConfiguration((context, config) =>
+            if (string.IsNullOrEmpty(keyvaulturl) || string.IsNullOrEmpty(aadappid))
             {
-                var builtConfig = config.Build();
+                throw new ArgumentException("missing keyvault URI or aadappid");
+            }
 
-                config.AddAzureKeyVault(
-                    //TODO store kv name in config
-                    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                    keyvaultbase,
-                    appclientid,
-                    GetCertbyIssuer(certissuer)
-                    );
-            });
+            config.AddAKVwithAppRegistrationSecretAuth(keyvaulturl, secret, aadappid);
+
+                //TODO: if this worked we'd use it but there is a dependency failure
+                //config.AddAzureKeyVault(
+                //    //TODO store kv name in config
+                //    //$"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                //    keyvaultbase,
+                //    appclientid,
+                //    GetCertbyIssuer(certissuer)
+                //    );
+            //});
         }
 
-        public static async Task<Tuple<string, string>> GetAKVSecretsUsingSecret(string appclientsecret)
+        public static async Task<Tuple<string, string>> GetAKVSecretsUsingSecret(string appclientsecret, string appclientid, string keyvaultbase)
         {
             var client = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(async (string authority, string resource, string scope) =>
             {
@@ -76,21 +78,35 @@ namespace WebAPIControllers.Extensions
             }
             ));
 
-            var appinsightskey = await client.GetSecretAsync(keyvaultbase, appinsightskeyname);
             var sqlconnectionstring = await client.GetSecretAsync(keyvaultbase, sqlconnectionstringkeyname);
-            return new Tuple<string, string>(appinsightskey.Value, sqlconnectionstring.Value);
+            return new Tuple<string, string>("", sqlconnectionstring.Value);
         }
 
-        public static async Task<Tuple<string, string>> GetAKVSecretsUsingCert()
+        public static async Task<Tuple<string, string>> GetAKVSecretsUsingCert(string keyvaultbase)
         {
-            KeyVaultClient client = CreateKVClientForIssuer(certissuer);
+            var client = CreateKVClientForIssuer(certissuer, keyvaultbase);
 
-            var appinsightskey = await client.GetSecretAsync(keyvaultbase, appinsightskeyname);
             var sqlconnectionstring = await client.GetSecretAsync(keyvaultbase, sqlconnectionstringkeyname);
-            return new Tuple<string, string>(appinsightskey.Value, sqlconnectionstring.Value);
+            return new Tuple<string, string>("", sqlconnectionstring.Value);
         }
 
-        private static KeyVaultClient CreateKVClientForIssuer(string certissuer)
+        public static async Task<Tuple<string, string>> GetAKVSecretsUsingMSI(string keyvaultbase, ILogger<DataService> logger = null)
+        {
+            var client = CreateKVClientForMSI();
+            if (logger != null)
+            {
+                logger.LogInformation("After create client");
+            }
+
+            var sqlconnectionstring = await client.GetSecretAsync(keyvaultbase, sqlconnectionstringkeyname);
+            if (logger != null)
+            {
+                logger.LogInformation("After get connstring"+sqlconnectionstring.Value);
+            }
+            return new Tuple<string, string>("", sqlconnectionstring.Value);
+        }
+
+        private static KeyVaultClient CreateKVClientForIssuer(string certissuer, string appclientid)
         {
             var cert = GetCertbyIssuer(certissuer);
 
@@ -112,6 +128,15 @@ namespace WebAPIControllers.Extensions
             }
             ));
             return client;
+        }
+
+        private static KeyVaultClient CreateKVClientForMSI()
+        {
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var keyVaultClient = new KeyVaultClient(
+                new KeyVaultClient.AuthenticationCallback(
+                    azureServiceTokenProvider.KeyVaultTokenCallback));
+            return keyVaultClient;
         }
 
         private static X509Certificate2 GetCertbyIssuer(string FindValue)

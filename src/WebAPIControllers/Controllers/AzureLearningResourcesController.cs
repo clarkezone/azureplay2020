@@ -24,10 +24,7 @@ namespace azureplaywebapi.Controllers
         {
             _lrService = lrService;
             _logger = logger;
-            if (_lrService.BadConnectionString())
-            {
-                _logger.LogError("No connection string configured");
-            }
+            _lrService.CheckConnectionString(_logger);
         }
 
         // GET: LearningResource

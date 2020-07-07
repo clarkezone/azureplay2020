@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace DataLayerModernSQL.Services
 {
     public class DataService : DbContext
     {
+        private const string CONNSTRINGKEY = "sqlconnectionstring";
         readonly string _connectionString;
 
         //Required by data migrations
@@ -20,8 +22,7 @@ namespace DataLayerModernSQL.Services
 
         public DataService(IConfiguration configuration)
         {
-            //TODO extract constant
-            _connectionString = configuration.GetConnectionString("sqlconnectionstring");
+            _connectionString = configuration.GetValue<string>(CONNSTRINGKEY);
         }
 
         public DataService(string ConnectionString)
@@ -37,8 +38,15 @@ namespace DataLayerModernSQL.Services
         public DbSet<ServiceDescription> Services { get; set; }
 
         public DbSet<LearningResource> LearningResources { get; set; }
+        public string Con { get { return _connectionString; } }
 
-        public bool BadConnectionString() => string.IsNullOrEmpty(_connectionString);
+        public void CheckConnectionString(ILogger logger)
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+            {
+                logger.LogError($"Connection string error: {CONNSTRINGKEY} is null");
+            }
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

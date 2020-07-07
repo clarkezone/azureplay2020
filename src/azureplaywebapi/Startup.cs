@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System.Linq;
 using WebAPIControllers.Extensions;
 
 namespace azureplaywebapi
@@ -26,10 +28,12 @@ namespace azureplaywebapi
         {
             services.AddControllers();
 
+            // SET ApplicationInsights:InstrumentationKey=putinstrumentationkeyhere
+            services.AddApplicationInsightsTelemetry();
+
             services.AddSingleton<DataService>();
             //services.AddSingleton<ServiceDescriptionService>();
-            services.AddSingleton<LearningResourceService>();
-            services.AddApplicationInsightsTelemetry(Configuration[KeyvaultSecrets.AppInsightsKeyName]);
+            //services.AddSingleton<LearningResourceService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -52,7 +56,7 @@ namespace azureplaywebapi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+           
             app.UseAuthorization();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
